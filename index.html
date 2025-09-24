@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix CLI Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        /* Sample content background */
+        .background-content {
+            padding: 40px;
+            line-height: 1.6;
+            font-size: 16px;
+            transition: filter 0.3s ease;
+        }
+
+        .background-content h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .background-content p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        /* Digital Glitch Overlay for Full Screen */
+        .digital-glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .digital-glitch-overlay.active {
+            display: block;
+        }
+
+        .digital-glitch-overlay::before,
+        .digital-glitch-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .digital-glitch-overlay::before {
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                rgba(255, 0, 255, 0.9) 2px,
+                transparent 4px,
+                rgba(0, 255, 255, 0.9) 6px,
+                transparent 8px,
+                rgba(255, 255, 0, 0.9) 10px,
+                transparent 12px,
+                rgba(255, 0, 0, 0.9) 14px,
+                transparent 16px,
+                rgba(0, 255, 0, 0.9) 18px,
+                transparent 20px,
+                rgba(0, 0, 255, 0.9) 22px,
+                transparent 24px
+            );
+            animation: digitalNoise1 0.1s infinite;
+        }
+
+        .digital-glitch-overlay::after {
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                rgba(255, 0, 255, 0.7) 1px,
+                transparent 2px,
+                rgba(0, 255, 255, 0.7) 3px,
+                transparent 4px,
+                rgba(255, 255, 0, 0.7) 5px,
+                transparent 6px,
+                rgba(255, 0, 0, 0.7) 7px,
+                transparent 8px,
+                rgba(0, 255, 0, 0.7) 9px,
+                transparent 10px,
+                rgba(0, 0, 255, 0.7) 11px,
+                transparent 12px
+            );
+            animation: digitalNoise2 0.12s infinite;
+        }
+
+        @keyframes digitalNoise1 {
+            0% { 
+                transform: translateX(0px) scaleX(1);
+                opacity: 0.9;
+            }
+            10% { 
+                transform: translateX(-15px) scaleX(0.8);
+                opacity: 1;
+            }
+            20% { 
+                transform: translateX(20px) scaleX(1.2);
+                opacity: 0.8;
+            }
+            30% { 
+                transform: translateX(-8px) scaleX(0.9);
+                opacity: 0.95;
+            }
+            40% { 
+                transform: translateX(25px) scaleX(1.1);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateX(-18px) scaleX(0.7);
+                opacity: 0.85;
+            }
+            60% { 
+                transform: translateX(12px) scaleX(1.3);
+                opacity: 0.75;
+            }
+            70% { 
+                transform: translateX(-22px) scaleX(0.85);
+                opacity: 0.9;
+            }
+            80% { 
+                transform: translateX(16px) scaleX(1.15);
+                opacity: 0.65;
+            }
+            90% { 
+                transform: translateX(-10px) scaleX(0.95);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateX(0px) scaleX(1);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes digitalNoise2 {
+            0% { 
+                transform: translateY(0px) scaleY(1);
+                opacity: 0.7;
+            }
+            15% { 
+                transform: translateY(-12px) scaleY(0.8);
+                opacity: 0.8;
+            }
+            25% { 
+                transform: translateY(18px) scaleY(1.2);
+                opacity: 0.6;
+            }
+            35% { 
+                transform: translateY(-6px) scaleY(0.9);
+                opacity: 0.85;
+            }
+            45% { 
+                transform: translateY(22px) scaleY(1.1);
+                opacity: 0.5;
+            }
+            55% { 
+                transform: translateY(-14px) scaleY(0.7);
+                opacity: 0.75;
+            }
+            65% { 
+                transform: translateY(10px) scaleY(1.3);
+                opacity: 0.6;
+            }
+            75% { 
+                transform: translateY(-20px) scaleY(0.85);
+                opacity: 0.8;
+            }
+            85% { 
+                transform: translateY(8px) scaleY(1.15);
+                opacity: 0.55;
+            }
+            95% { 
+                transform: translateY(-4px) scaleY(0.95);
+                opacity: 0.7;
+            }
+            100% { 
+                transform: translateY(0px) scaleY(1);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes digitalNoise1 {
+            0% { 
+                transform: translateX(0px) scaleX(1);
+                opacity: 0.8;
+            }
+            10% { 
+                transform: translateX(-15px) scaleX(0.8);
+                opacity: 0.9;
+            }
+            20% { 
+                transform: translateX(20px) scaleX(1.2);
+                opacity: 0.7;
+            }
+            30% { 
+                transform: translateX(-8px) scaleX(0.9);
+                opacity: 0.95;
+            }
+            40% { 
+                transform: translateX(25px) scaleX(1.1);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateX(-18px) scaleX(0.7);
+                opacity: 0.85;
+            }
+            60% { 
+                transform: translateX(12px) scaleX(1.3);
+                opacity: 0.75;
+            }
+            70% { 
+                transform: translateX(-22px) scaleX(0.85);
+                opacity: 0.9;
+            }
+            80% { 
+                transform: translateX(16px) scaleX(1.15);
+                opacity: 0.65;
+            }
+            90% { 
+                transform: translateX(-10px) scaleX(0.95);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateX(0px) scaleX(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes digitalNoise2 {
+            0% { 
+                transform: translateY(0px) scaleY(1);
+                opacity: 0.6;
+            }
+            15% { 
+                transform: translateY(-12px) scaleY(0.8);
+                opacity: 0.7;
+            }
+            25% { 
+                transform: translateY(18px) scaleY(1.2);
+                opacity: 0.5;
+            }
+            35% { 
+                transform: translateY(-6px) scaleY(0.9);
+                opacity: 0.8;
+            }
+            45% { 
+                transform: translateY(22px) scaleY(1.1);
+                opacity: 0.4;
+            }
+            55% { 
+                transform: translateY(-14px) scaleY(0.7);
+                opacity: 0.75;
+            }
+            65% { 
+                transform: translateY(10px) scaleY(1.3);
+                opacity: 0.55;
+            }
+            75% { 
+                transform: translateY(-20px) scaleY(0.85);
+                opacity: 0.7;
+            }
+            85% { 
+                transform: translateY(8px) scaleY(1.15);
+                opacity: 0.45;
+            }
+            95% { 
+                transform: translateY(-4px) scaleY(0.95);
+                opacity: 0.65;
+            }
+            100% { 
+                transform: translateY(0px) scaleY(1);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes backgroundGlitch {
+            0% { 
+                filter: hue-rotate(0deg) brightness(1) contrast(1);
+                transform: translateX(0) translateY(0) skewX(0deg);
+            }
+            5% { 
+                filter: hue-rotate(90deg) brightness(1.2) contrast(1.5);
+                transform: translateX(-3px) translateY(2px) skewX(2deg);
+            }
+            10% { 
+                filter: hue-rotate(180deg) brightness(0.8) contrast(2);
+                transform: translateX(4px) translateY(-3px) skewX(-3deg);
+            }
+            15% { 
+                filter: hue-rotate(270deg) brightness(1.3) contrast(0.5);
+                transform: translateX(-5px) translateY(1px) skewX(4deg);
+            }
+            20% { 
+                filter: hue-rotate(360deg) brightness(0.7) contrast(1.8);
+                transform: translateX(3px) translateY(-4px) skewX(-2deg);
+            }
+            25% { 
+                filter: hue-rotate(45deg) brightness(1.4) contrast(1.2);
+                transform: translateX(-6px) translateY(3px) skewX(5deg);
+            }
+            30% { 
+                filter: hue-rotate(135deg) brightness(0.9) contrast(1.7);
+                transform: translateX(5px) translateY(-2px) skewX(-3deg);
+            }
+            35% { 
+                filter: hue-rotate(225deg) brightness(1.1) contrast(0.8);
+                transform: translateX(-2px) translateY(4px) skewX(2deg);
+            }
+            40% { 
+                filter: hue-rotate(315deg) brightness(0.6) contrast(2.2);
+                transform: translateX(7px) translateY(-3px) skewX(-5deg);
+            }
+            45% { 
+                filter: hue-rotate(180deg) brightness(1.5) contrast(0.3);
+                transform: translateX(-4px) translateY(2px) skewX(3deg);
+            }
+            50% { 
+                filter: hue-rotate(90deg) brightness(0.4) contrast(2.5);
+                transform: translateX(5px) translateY(-5px) skewX(-4deg);
+            }
+            55% { 
+                filter: hue-rotate(270deg) brightness(1.6) contrast(0.7);
+                transform: translateX(-6px) translateY(3px) skewX(6deg);
+            }
+            60% { 
+                filter: hue-rotate(0deg) brightness(0.3) contrast(3);
+                transform: translateX(2px) translateY(-2px) skewX(-1deg);
+            }
+            65% { 
+                filter: hue-rotate(180deg) brightness(1.8) contrast(0.2);
+                transform: translateX(-8px) translateY(4px) skewX(7deg);
+            }
+            70% { 
+                filter: hue-rotate(45deg) brightness(0.5) contrast(2.8);
+                transform: translateX(4px) translateY(-3px) skewX(-4deg);
+            }
+            75% { 
+                filter: hue-rotate(315deg) brightness(1.7) contrast(0.4);
+                transform: translateX(-5px) translateY(4px) skewX(3deg);
+            }
+            80% { 
+                filter: hue-rotate(135deg) brightness(0.2) contrast(3.5);
+                transform: translateX(8px) translateY(-4px) skewX(-6deg);
+            }
+            85% { 
+                filter: hue-rotate(225deg) brightness(1.9) contrast(0.1);
+                transform: translateX(-3px) translateY(2px) skewX(2deg);
+            }
+            90% { 
+                filter: hue-rotate(90deg) brightness(0.6) contrast(2.2);
+                transform: translateX(9px) translateY(-4px) skewX(-8deg);
+            }
+            95% { 
+                filter: hue-rotate(270deg) brightness(1.3) contrast(0.8);
+                transform: translateX(-7px) translateY(3px) skewX(5deg);
+            }
+            100% { 
+                filter: hue-rotate(0deg) brightness(1) contrast(1);
+                transform: translateX(0) translateY(0) skewX(0deg);
+            }
+        }
+
+        /* Matrix CLI Overlay */
+        .matrix-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .matrix-overlay.active {
+            display: flex;
+            animation: overlayGlitchIn 1s ease-out;
+        }
+
+        @keyframes overlayGlitchIn {
+            0% { 
+                opacity: 0;
+                background: rgba(255, 0, 0, 0.3);
+            }
+            5% { 
+                opacity: 0.3;
+                background: rgba(0, 255, 0, 0.4);
+            }
+            10% { 
+                opacity: 0.1;
+                background: rgba(0, 0, 255, 0.3);
+            }
+            15% { 
+                opacity: 0.7;
+                background: rgba(255, 255, 0, 0.2);
+            }
+            20% { 
+                opacity: 0.2;
+                background: rgba(255, 0, 255, 0.3);
+            }
+            25% { 
+                opacity: 0.8;
+                background: rgba(0, 255, 255, 0.2);
+            }
+            30% { 
+                opacity: 0.1;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            35% { 
+                opacity: 0.9;
+                background: rgba(128, 0, 128, 0.3);
+            }
+            40% { 
+                opacity: 0.3;
+                background: rgba(255, 128, 0, 0.2);
+            }
+            50% { 
+                opacity: 0.6;
+                background: rgba(0, 128, 255, 0.3);
+            }
+            60% { 
+                opacity: 0.4;
+                background: rgba(128, 255, 0, 0.2);
+            }
+            70% { 
+                opacity: 0.8;
+                background: rgba(255, 0, 128, 0.3);
+            }
+            80% { 
+                opacity: 0.5;
+                background: rgba(0, 0, 0, 0.7);
+            }
+            90% { 
+                opacity: 0.9;
+                background: rgba(0, 0, 0, 0.85);
+            }
+            100% { 
+                opacity: 1;
+                background: rgba(0, 0, 0, 0.95);
+            }
+        }
+
+        .matrix-cli {
+            width: 80%;
+            max-width: 800px;
+            height: 70%;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: cliGlitchPopIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes cliGlitchPopIn {
+            0% {
+                transform: scale(0.1) rotate(15deg) skewX(20deg);
+                opacity: 0;
+                filter: hue-rotate(180deg) brightness(2) contrast(3);
+            }
+            10% {
+                transform: scale(0.3) rotate(-10deg) skewX(-15deg);
+                opacity: 0.3;
+                filter: hue-rotate(90deg) brightness(0.5) contrast(2);
+            }
+            20% {
+                transform: scale(0.6) rotate(8deg) skewX(10deg);
+                opacity: 0.6;
+                filter: hue-rotate(270deg) brightness(1.8) contrast(0.5);
+            }
+            30% {
+                transform: scale(0.8) rotate(-5deg) skewX(-8deg);
+                opacity: 0.8;
+                filter: hue-rotate(45deg) brightness(0.7) contrast(2.5);
+            }
+            40% {
+                transform: scale(1.1) rotate(3deg) skewX(5deg);
+                opacity: 0.9;
+                filter: hue-rotate(315deg) brightness(1.3) contrast(1.5);
+            }
+            50% {
+                transform: scale(0.95) rotate(-2deg) skewX(-3deg);
+                opacity: 0.95;
+                filter: hue-rotate(135deg) brightness(0.9) contrast(1.8);
+            }
+            70% {
+                transform: scale(1.05) rotate(1deg) skewX(2deg);
+                opacity: 0.98;
+                filter: hue-rotate(225deg) brightness(1.1) contrast(1.2);
+            }
+            85% {
+                transform: scale(0.98) rotate(-0.5deg) skewX(-1deg);
+                opacity: 0.99;
+                filter: hue-rotate(0deg) brightness(1.05) contrast(1.1);
+            }
+            100% {
+                transform: scale(1) rotate(0deg) skewX(0deg);
+                opacity: 1;
+                filter: hue-rotate(0deg) brightness(1) contrast(1);
+            }
+        }
+
+        .cli-header {
+            background: linear-gradient(90deg, #003300, #004400);
+            padding: 10px 20px;
+            border-bottom: 1px solid #00ff00;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cli-title {
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .cli-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cli-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cli-control.close { background: #ff4444; }
+        .cli-control.minimize { background: #ffaa00; }
+        .cli-control.maximize { background: #44ff44; }
+
+        .cli-body {
+            height: calc(100% - 60px);
+            padding: 20px;
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .cli-line {
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateX(-50px) rotateX(90deg);
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        .cli-line.visible {
+            animation: lineGlitchIn 0.8s forwards;
+        }
+
+        @keyframes lineGlitchIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px) rotateX(90deg) skewX(20deg);
+                filter: hue-rotate(180deg) brightness(2) blur(2px);
+            }
+            10% {
+                opacity: 0.3;
+                transform: translateX(-30px) rotateX(60deg) skewX(15deg);
+                filter: hue-rotate(90deg) brightness(0.5) blur(1px);
+            }
+            20% {
+                opacity: 0.6;
+                transform: translateX(-15px) rotateX(30deg) skewX(10deg);
+                filter: hue-rotate(270deg) brightness(1.8) blur(0.5px);
+            }
+            30% {
+                opacity: 0.8;
+                transform: translateX(-8px) rotateX(15deg) skewX(5deg);
+                filter: hue-rotate(45deg) brightness(0.7) blur(0px);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translateX(-2px) rotateX(5deg) skewX(2deg);
+                filter: hue-rotate(315deg) brightness(1.3) blur(0px);
+            }
+            70% {
+                opacity: 0.95;
+                transform: translateX(0) rotateX(2deg) skewX(1deg);
+                filter: hue-rotate(0deg) brightness(1.1) blur(0px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) rotateX(0deg) skewX(0deg);
+                filter: hue-rotate(0deg) brightness(1) blur(0px);
+            }
+        }
+
+        .cli-prompt {
+            color: #00ff00;
+            margin-right: 10px;
+        }
+
+        .cli-command {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .cli-result {
+            color: #00ff00;
+            margin-left: 20px;
+            font-style: italic;
+        }
+
+        .cli-line.typing .cli-command {
+            border-right: 2px solid #00ff00;
+            animation: typing-cursor 0.8s infinite;
+        }
+
+        @keyframes typing-cursor {
+            0%, 50% { border-color: #00ff00; }
+            51%, 100% { border-color: transparent; }
+        }
+
+        .final-message-line {
+            font-size: 36px;
+            color: #ff0000;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000;
+            font-weight: bold;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.5) rotateX(90deg);
+            filter: blur(10px);
+        }
+
+        .final-message-line.visible {
+            animation: finalLineAppear 1s forwards, finalLineGlow 2s infinite alternate 1s;
+        }
+
+        @keyframes finalLineAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotateX(90deg);
+                filter: blur(10px);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1) rotateX(45deg);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateX(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes finalLineGlow {
+            0% {
+                text-shadow: 
+                    0 0 10px #ff0000,
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000;
+                transform: scale(1);
+            }
+            100% {
+                text-shadow: 
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000,
+                    0 0 40px #ff0000,
+                    0 0 50px #ff0000;
+                transform: scale(1.02);
+            }
+        }
+
+        .cli-error {
+            color: #ff4444 !important;
+        }
+
+        .cli-warning {
+            color: #ffaa00 !important;
+        }
+
+        .cli-success {
+            color: #44ff44 !important;
+        }
+
+        .cli-cursor {
+            animation: blink 1s infinite;
+            color: #00ff00;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+#text{
+font-size:100px;
+}
+#list-text{
+    font-size: 34px;
+    padding: 10px;
+}
+    </style>
+</head>
+<body>
+    <!-- Background Content -->
+    <div class="background-content" >
+        <h1 id="text">Normal Classroom Content</h1>
+        <ul id="list-text">
+            <li>Today we'll be learning about computer networks and cybersecurity. Networks are interconnected systems that allow computers to communicate and share resources...</p>
+            <li>A computer network consists of multiple devices connected together to share information and resources. The most common types include Local Area Networks (LANs), Wide Area Networks (WANs), and the global network we know as the Internet.</p>
+            <li>Security is a critical aspect of networking. Firewalls, encryption, and access controls help protect systems from unauthorized access. However, even the most secure systems can have vulnerabilities...</p>
+            <li>Let's examine how data packets travel through networks and the various protocols that govern this communication. TCP/IP is the fundamental protocol suite that enables Internet communication...</p>
+            <li>Network administrators must constantly monitor for suspicious activities, unusual traffic patterns, and potential security breaches. When a system is compromised, immediate action is required...</p>
+        </ul>
+    </div>
+
+    <!-- Digital Glitch Overlay for Full Screen -->
+    <div class="digital-glitch-overlay" id="digitalGlitchOverlay"></div>
+        <!-- <h1>Normal Classroom Content</h1> -->
+        <!-- <p>Today we'll be learning about computer networks and cybersecurity. Networks are interconnected systems that allow computers to communicate and share resources...</p>
+        
+        <p>A computer network consists of multiple devices connected together to share information and resources. The most common types include Local Area Networks (LANs), Wide Area Networks (WANs), and the global network we know as the Internet.</p>
+        
+        <p>Security is a critical aspect of networking. Firewalls, encryption, and access controls help protect systems from unauthorized access. However, even the most secure systems can have vulnerabilities...</p>
+        
+        <p>Let's examine how data packets travel through networks and the various protocols that govern this communication. TCP/IP is the fundamental protocol suite that enables Internet communication...</p>
+        
+        <p>Network administrators must constantly monitor for suspicious activities, unusual traffic patterns, and potential security breaches. When a system is compromised, immediate action is required...</p> -->
+    </div>
+
+
+
+    <!-- Matrix CLI Overlay -->
+    <div class="matrix-overlay" id="matrixOverlay">
+        <div class="matrix-cli" id="matrixCli">
+            <div class="matrix-rain" id="matrixRain"></div>
+            <div class="cli-header">
+                <span class="cli-title" id="cliTitleDisplay">SYSTEM_BREACH_DETECTED</span>
+                <div class="cli-controls">
+                    <div class="cli-control minimize"></div>
+                    <div class="cli-control maximize"></div>
+                    <div class="cli-control close" onclick="hideCLI()"></div>
+                </div>
+            </div>
+            <div class="cli-body" id="cliBody">
+                <!-- Content will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let matrixRainInterval;
+        let typingTimeout;
+        let currentCommandIndex = 0;
+
+        // Pre-configured content
+        const cliTitle = 'SYSTEM_BREACH_DETECTED';
+        const cliCommands = [
+            { cmd: 'nmap -sS 192.168.1.0/24', desc: 'Scanning network...', type: 'scan' },
+            // { cmd: 'exploit/multi/handler', desc: 'Setting up payload handler...', type: 'exploit' },
+            // { cmd: 'use auxiliary/scanner/smb/smb_version', desc: 'Scanning SMB services...', type: 'scan' },
+            { cmd: 'set RHOSTS 192.168.1.100', desc: 'Target acquired...', type: 'target' },
+            // { cmd: 'run', desc: 'Executing exploit...', type: 'exploit' },
+            // { cmd: 'sessions -l', desc: 'Active sessions found...', type: 'success' },
+            { cmd: 'shell', desc: 'Opening remote shell...', type: 'success' },
+            // { cmd: 'whoami', desc: 'SYSTEM', type: 'success' },
+            // { cmd: 'net user hacker P@ssw0rd123 /add', desc: 'Creating backdoor account...', type: 'warning' },
+            // { cmd: 'net localgroup administrators hacker /add', desc: 'Escalating privileges...', type: 'warning' },
+            // { cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v "SystemUpdate" /t REG_SZ /d "C:\\temp\\backdoor.exe"', desc: 'Installing persistence...', type: 'warning' }
+        ];
+        
+        const finalMessages = [
+            'SYSTEM HAS BEEN  COMPROMISED',
+            // 'SECURITY BREACH IN PROGRESS', 
+            'WARNING !!!',
+            'SOMETHING IS COMING',
+            // 'EVACUATION PROTOCOL INITIATED',
+            'STUDENTS AND FACULTY REPORTED TO BE READY ',
+            // 'THIS IS NOT A DRILL',
+            'THE COUNTDOWN HAS BEGUN ...'
+        ];
+        
+        const typingSpeed = 100;
+        const lineDelay = 1500;
+
+        function createMatrixRain() {
+            const rain = document.getElementById('matrixRain');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            matrixRainInterval = setInterval(() => {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.opacity = Math.random() * 0.5;
+                rain.appendChild(char);
+                
+                setTimeout(() => {
+                    if (char.parentNode) {
+                        char.remove();
+                    }
+                }, 5000);
+            }, 100);
+        }
+
+        function stopMatrixRain() {
+            if (matrixRainInterval) {
+                clearInterval(matrixRainInterval);
+                document.getElementById('matrixRain').innerHTML = '';
+            }
+        }
+
+        function showCLI() {
+            const overlay = document.getElementById('matrixOverlay');
+            const digitalGlitch = document.getElementById('digitalGlitchOverlay');
+            
+            // Start full-screen digital glitch for 2 seconds
+            digitalGlitch.classList.add('active');
+            
+            // After 2 seconds, show the CLI
+            setTimeout(() => {
+                // Remove digital glitching
+                digitalGlitch.classList.remove('active');
+                
+                // Set title
+                document.getElementById('cliTitleDisplay').textContent = cliTitle;
+                
+                // Show overlay with glitch effect
+                overlay.classList.add('active');
+                createMatrixRain();
+                
+                // Clear previous content
+                const cliBody = document.getElementById('cliBody');
+                cliBody.innerHTML = '';
+                currentCommandIndex = 0;
+                
+                // Start command sequence after CLI animation settles
+                setTimeout(() => {
+                    runNextCommand();
+                }, 1500);
+                
+            }, 2000); // 2 seconds of digital glitching
+        }
+
+        function runNextCommand() {
+            if (currentCommandIndex >= cliCommands.length) {
+                // Show final dramatic message
+                setTimeout(() => {
+                    showFinalMessage();
+                }, 1000);
+                return;
+            }
+            
+            const command = cliCommands[currentCommandIndex];
+            const cliBody = document.getElementById('cliBody');
+            
+            // Create command line
+            const cmdLine = document.createElement('div');
+            cmdLine.className = 'cli-line';
+            
+            let prompt = '>';
+            if (command.type === 'error') prompt = '[!]';
+            else if (command.type === 'warning') prompt = '[W]';
+            else if (command.type === 'success') prompt = '[+]';
+            else if (command.type === 'scan') prompt = '[SCAN]';
+            else if (command.type === 'exploit') prompt = '[EXPLOIT]';
+            else if (command.type === 'target') prompt = '[TARGET]';
+            
+            cmdLine.innerHTML = `<span class="cli-prompt">${prompt}</span><span class="cli-command"></span>`;
+            cliBody.appendChild(cmdLine);
+            
+            // Make line visible with glitch effect
+            setTimeout(() => {
+                cmdLine.classList.add('visible', 'typing');
+                
+                // Type command
+                typeCommand(cmdLine.querySelector('.cli-command'), command.cmd, () => {
+                    cmdLine.classList.remove('typing');
+                    
+                    // Add result line if there's a description
+                    if (command.desc) {
+                        setTimeout(() => {
+                            const resultLine = document.createElement('div');
+                            resultLine.className = 'cli-line';
+                            
+                            let resultClass = 'cli-result';
+                            if (command.type === 'error') resultClass += ' cli-error';
+                            else if (command.type === 'warning') resultClass += ' cli-warning';
+                            else if (command.type === 'success') resultClass += ' cli-success';
+                            
+                            resultLine.innerHTML = `<span class="${resultClass}">${command.desc}</span>`;
+                            cliBody.appendChild(resultLine);
+                            
+                            setTimeout(() => {
+                                resultLine.classList.add('visible');
+                            }, 100);
+                            
+                            // Auto scroll
+                            setTimeout(() => {
+                                cliBody.scrollTop = cliBody.scrollHeight;
+                            }, 200);
+                            
+                            // Next command
+                            setTimeout(() => {
+                                currentCommandIndex++;
+                                runNextCommand();
+                            }, lineDelay);
+                        }, 300);
+                    } else {
+                        // Next command immediately
+                        setTimeout(() => {
+                            currentCommandIndex++;
+                            runNextCommand();
+                        }, lineDelay);
+                    }
+                });
+            }, 100);
+        }
+
+        function showFinalMessage() {
+            const cliBody = document.getElementById('cliBody');
+            
+            // Clear screen with glitch effect
+            setTimeout(() => {
+                cliBody.innerHTML = '';
+                
+                // Show messages one by one
+                let messageIndex = 0;
+                
+                function showNextMessage() {
+                    if (messageIndex >= finalMessages.length) {
+                        return;
+                    }
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'final-message-line';
+                    messageDiv.textContent = finalMessages[messageIndex];
+                    cliBody.appendChild(messageDiv);
+                    
+                    setTimeout(() => {
+                        messageDiv.classList.add('visible');
+                    }, 100);
+                    
+                    // Auto scroll to keep messages visible
+                    setTimeout(() => {
+                        cliBody.scrollTop = cliBody.scrollHeight;
+                    }, 200);
+                    
+                    messageIndex++;
+                    
+                    // Show next message after delay
+                    setTimeout(() => {
+                        showNextMessage();
+                    }, 2000); // 2 seconds between messages
+                }
+                
+                showNextMessage();
+                
+            }, 500);
+        }
+
+        function typeCommand(element, text, callback) {
+            let i = 0;
+            const charDelay = typingSpeed;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, charDelay);
+                } else {
+                    // Command completed
+                    setTimeout(callback, 200);
+                }
+            }
+            
+            setTimeout(typeChar, 100);
+        }
+
+        function hideCLI() {
+            const overlay = document.getElementById('matrixOverlay');
+            const digitalGlitch = document.getElementById('digitalGlitchOverlay');
+            
+            overlay.classList.remove('active');
+            digitalGlitch.classList.remove('active');
+            stopMatrixRain();
+            currentCommandIndex = 0;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideCLI();
+            } else if (e.key === ' ') {
+                // Ctrl+Shift+H to activate CLI
+                showCLI();
+            }
+        });
+
+        // Close CLI when clicking outside
+        document.getElementById('matrixOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideCLI();
+            }
+        });
+    </script>
+</body>
+</html>
